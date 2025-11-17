@@ -86,9 +86,9 @@ void display() {
     glEnd();
 
     // 球体（在原点）
-    if (materialMode == 0) setMaterialPlastic();
+	if (materialMode == 0) setMaterialPlastic();// 设置材质
     else setMaterialMetal();
-    glutSolidSphere(1.0, 32, 32);
+	glutSolidSphere(1.0, 32, 32); // 半径1，32段经纬线
 
     // 立方体（右侧）
     glPushMatrix();
@@ -135,7 +135,7 @@ int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(800, 600);
-    glutCreateWindow("OpenGL 光照演示 - 大一课堂汇报");
+    glutCreateWindow("OpenGL 光照演示 ");
 
     init();
     glutDisplayFunc(display);
