@@ -35,3 +35,33 @@ x86/
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+# Visual Studio
+.vs/
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# NuGet
+packages/
+!packages.config
+
+# Build output
+Debug/
+Release/
+x64/
+x86/
+*.exe
+*.dll
+*.pdb
+*.ilk
+*.obj
+*.log
+
+# Other
+Thumbs.db
