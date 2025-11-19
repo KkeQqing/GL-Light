@@ -5,6 +5,10 @@
 // 光源位置
 GLfloat lightPos[4] = { 2.0f, 3.0f, 5.0f, 1.0f }; // 点光源 (w=1)
 
+// 新增聚光灯参数
+GLfloat spotLightPos[] = { 0.0f, 3.0f, 5.0f, 1.0f };
+GLfloat spotDirection[] = { 0.0f, -1.0f, -1.0f }; // 指向原点下方
+
 // 材质模式：0=塑料，1=金属
 int materialMode = 0;
 
@@ -20,6 +24,7 @@ void setMaterialPlastic() {
     glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
     glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
     glMaterialf(GL_FRONT, GL_SHININESS, shininess);
 }
 
@@ -32,7 +37,9 @@ void setMaterialMetal() {
     glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
     glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
     glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+
 }
 
 // 初始化 OpenGL 设置
@@ -47,6 +54,8 @@ void init() {
 	GLfloat light_diffuse[] = { 0.8f, 0.8f, 0.8f, 1.0f };// 漫反射：高强度，提供主要照明，体现物体的颜色和形状。
 	GLfloat light_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };// 镜面反射：最高强度，产生亮点，增强物体的光泽感。
 
+	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE); // 启用双面光照计算
+
 	// 将上述光源属性应用到光源0
     glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
@@ -58,6 +67,15 @@ void init() {
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
 
     glClearColor(0.1f, 0.1f, 0.2f, 1.0f); // 深蓝色背景
+
+    // 在 init() 中启用 GL_LIGHT1
+    glEnable(GL_LIGHT1);
+    glLightfv(GL_LIGHT1, GL_POSITION, spotLightPos);
+    glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spotDirection);
+    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 30.0f);        // 锥角 30 度
+    glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 20.0f);      // 聚光强度衰减
+    GLfloat spotDiffuse[] = { 0.8f, 0.3f, 0.2f, 1.0f };
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, spotDiffuse); // 暖色光
 }
 
 // 绘制场景
@@ -75,8 +93,18 @@ void display() {
     // 更新光源位置（固定在世界坐标）
     glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
-    // 地面
-	glColor3f(0.3f, 0.5f, 0.3f); // 绿色地面
+    
+    // 地面（红色材质）
+    GLfloat ground_ambient[] = { 0.3f, 0.3f, 0.3f, 1.0f };   // 环境光
+    GLfloat ground_diffuse[] = { 0.3f, 0.3f, 0.3f, 1.0f };   // 漫反射
+    GLfloat ground_specular[] = { 0.2f, 0.2f, 0.2f, 1.0f };  // 镜面反射：弱高光
+    GLfloat shininess = 5.0f;
+
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ground_ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, ground_diffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, ground_specular);
+    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
+
 	glBegin(GL_QUADS);// 绘制四边形
     glNormal3f(0, 1, 0);
     glVertex3f(-10, -1, -10);
